@@ -65,6 +65,14 @@ async fn main() {
             return;
         }
     };
+
+    match sqlx::migrate!().run(&pool).await {
+        Ok(_) => println!(""),
+        Err(e) => {
+            println!("Cannot run migrations: {}", e);
+        }
+    };
+
     let mut cale = Cale::new(pool.clone());
 
     match args.cmd {
