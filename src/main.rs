@@ -73,7 +73,7 @@ async fn main() {
         }
     };
 
-    let mut cale = Cale::new(pool.clone());
+    let cale = Cale::new(pool.clone());
 
     match args.cmd {
         Commands::Add {

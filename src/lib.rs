@@ -58,7 +58,7 @@ impl Cale {
         Cale { pool }
     }
 
-    pub async fn create(&mut self, event: NewEvent, allow_overlap: AllowOverlap) {
+    pub async fn create(self, event: NewEvent, allow_overlap: AllowOverlap) {
         match allow_overlap {
             AllowOverlap::No => match self
                 .is_overlaping(Range {
@@ -76,7 +76,7 @@ impl Cale {
         };
     }
 
-    pub async fn get_events(&self, range: Range) -> Result<Vec<Event>, String> {
+    pub async fn get_events(self, range: Range) -> Result<Vec<Event>, String> {
         match sqlx::query_as::<_, Event>("SELECT * FROM events WHERE start_date BETWEEN $1 AND $2")
             .bind(range.start_date)
             .bind(range.end_date)
@@ -88,7 +88,7 @@ impl Cale {
         }
     }
 
-    pub async fn delete(&mut self, id: u32) {
+    pub async fn delete(self, id: u32) {
         match sqlx::query("DELETE FROM events WHERE id = $1")
             .bind(id)
             .execute(&self.pool)
@@ -99,7 +99,7 @@ impl Cale {
         }
     }
 
-    pub async fn update(&mut self, event: Event, allow_overlap: AllowOverlap) {
+    pub async fn update(self, event: Event, allow_overlap: AllowOverlap) {
         let event = match sqlx::query_as::<_, Event>("SELECT * from events WHERE id = $1")
             .bind(event.id)
             .fetch_one(&self.pool)
@@ -129,7 +129,7 @@ impl Cale {
         }
     }
 
-    pub async fn show(&self, event_id: u32) -> Result<Event, String> {
+    pub async fn show(self, event_id: u32) -> Result<Event, String> {
         match sqlx::query_as::<_, Event>("SELECT * FROM events WHERE id = $1")
             .bind(event_id)
             .fetch_one(&self.pool)
