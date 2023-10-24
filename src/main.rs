@@ -100,37 +100,47 @@ async fn main() {
                 };
             match args.allow_overlap {
                 true => {
-                    cale.create(
-                        NewEvent {
-                            title,
-                            start_date: start_date_timestamp,
-                            end_date: end_date_timestamp,
-                        },
-                        AllowOverlap::Yes,
-                    )
-                    .await
+                    match cale
+                        .create(
+                            NewEvent {
+                                title,
+                                start_date: start_date_timestamp,
+                                end_date: end_date_timestamp,
+                            },
+                            AllowOverlap::Yes,
+                        )
+                        .await
+                    {
+                        Ok(_) => println!("Event created"),
+                        Err(e) => println!("Cannot create event: {}", e),
+                    }
                 }
                 false => {
-                    cale.create(
-                        NewEvent {
-                            title,
-                            start_date: start_date_timestamp,
-                            end_date: end_date_timestamp,
-                        },
-                        AllowOverlap::No,
-                    )
-                    .await
+                    match cale
+                        .create(
+                            NewEvent {
+                                title,
+                                start_date: start_date_timestamp,
+                                end_date: end_date_timestamp,
+                            },
+                            AllowOverlap::No,
+                        )
+                        .await
+                    {
+                        Ok(_) => println!("Event created"),
+                        Err(e) => println!("Cannot create event: {}", e),
+                    }
                 }
             }
         }
-        Commands::Delete { id } => {
-            cale.delete(id).await;
-        }
-        Commands::Show { id } => {
-            if let Ok(event) = cale.show(id).await {
-                println!("{:#?}", event);
-            }
-        }
+        Commands::Delete { id } => match cale.delete(id).await {
+            Ok(_) => println!("Event deleted"),
+            Err(e) => println!("Cannot delete event: {}", e),
+        },
+        Commands::Show { id } => match cale.show(id).await {
+            Ok(event) => println!("{:#?}", event),
+            Err(e) => println!("Cannot show event: {}", e),
+        },
         Commands::List {
             start_date,
             end_date,
@@ -153,14 +163,17 @@ async fn main() {
                     }
                 };
 
-            if let Ok(events) = cale
+            match cale
                 .get_events(Range {
                     start_date: start_date_timestamp,
                     end_date: end_date_timestamp,
                 })
                 .await
             {
-                println!("{:#?}", events);
+                Ok(events) => {
+                    println!("{:#?}", events);
+                }
+                Err(e) => println!("Cannot get events: {}", e),
             }
         }
         Commands::Update {
@@ -188,28 +201,38 @@ async fn main() {
                 };
             match args.allow_overlap {
                 true => {
-                    cale.update(
-                        Event {
-                            id,
-                            title,
-                            start_date: start_date_timestamp,
-                            end_date: end_date_timestamp,
-                        },
-                        AllowOverlap::Yes,
-                    )
-                    .await
+                    match cale
+                        .update(
+                            Event {
+                                id,
+                                title,
+                                start_date: start_date_timestamp,
+                                end_date: end_date_timestamp,
+                            },
+                            AllowOverlap::Yes,
+                        )
+                        .await
+                    {
+                        Ok(_) => println!("Event updated"),
+                        Err(e) => println!("Cannot update event: {}", e),
+                    }
                 }
                 false => {
-                    cale.update(
-                        Event {
-                            id,
-                            title,
-                            start_date: start_date_timestamp,
-                            end_date: end_date_timestamp,
-                        },
-                        AllowOverlap::No,
-                    )
-                    .await
+                    match cale
+                        .update(
+                            Event {
+                                id,
+                                title,
+                                start_date: start_date_timestamp,
+                                end_date: end_date_timestamp,
+                            },
+                            AllowOverlap::No,
+                        )
+                        .await
+                    {
+                        Ok(_) => println!("Event updated"),
+                        Err(e) => println!("Cannot update event: {}", e),
+                    }
                 }
             }
         }
