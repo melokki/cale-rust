@@ -42,10 +42,6 @@ pub struct Range {
     pub end_date: i64,
 }
 
-pub struct CaleError<'a> {
-    pub message: &'a str,
-}
-
 impl Cale {
     pub fn new(pool: Pool<Sqlite>) -> Cale {
         Cale { pool }
